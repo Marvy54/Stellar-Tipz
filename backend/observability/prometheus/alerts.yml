@@ -214,3 +214,48 @@ groups:
           description: >-
             At least one query waited longer than DATABASE_POOL_TIMEOUT_SECONDS
             for a connection in the last ten minutes.
+
+  - name: stellar-tipz-treasury-security
+    rules:
+      - alert: UnexpectedTreasuryOutflow
+        expr: increase(tipz_treasury_unexpected_outflows_total[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          area: treasury
+        annotations:
+          summary: Treasury balance decreased unexpectedly
+          description: >-
+            The fee collector's observed native XLM balance fell below its prior
+            observation. Preserve the snapshot and follow backend/docs/TREASURY_MONITORING.md.
+          runbook: backend/docs/TREASURY_MONITORING.md
+
+  - name: stellar-tipz-credit
+    rules:
+      - alert: CreditScoreRecomputeStalled
+        expr: time() - tipz_credit_recompute_last_success_timestamp_seconds > 28800
+        for: 10m
+        labels:
+          severity: critical
+          area: credit
+        annotations:
+          summary: Credit recomputation has not completed successfully for 8 hours
+          runbook: docs/runbooks/credit-recompute.md
+      - alert: CreditScoreOldestStale
+        expr: tipz_credit_score_oldest_age_seconds > 28800
+        for: 10m
+        labels:
+          severity: critical
+          area: credit
+        annotations:
+          summary: At least one stored creator score is over 8 hours old
+          runbook: docs/runbooks/credit-recompute.md
+      - alert: CreditScoreRecomputeFailure
+        expr: increase(tipz_credit_recompute_failures_total[7h]) > 0
+        for: 0m
+        labels:
+          severity: warning
+          area: credit
+        annotations:
+          summary: Credit recompute encountered an individual-score or job failure
+          runbook: docs/runbooks/credit-recompute.md
