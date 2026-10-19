@@ -1,0 +1,18 @@
+{
+  "default_branch": "test-implement-drips",
+  "branches": [
+    "fix/issue-1550-add-component-tests-for-pageannouncement",
+    "origin",
+    "test-implement-drips"
+  ],
+  "parent": {
+    "fix/issue-1550-add-component-tests-for-pageannouncement": "test-implement-drips",
+    "origin": "test-implement-drips",
+    "test-implement-drips": null
+  },
+  "order": [
+    "test-implement-drips",
+    "fix/issue-1550-add-component-tests-for-pageannouncement",
+    "origin"
+  ]
+}
